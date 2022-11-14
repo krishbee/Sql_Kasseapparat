@@ -1,0 +1,66 @@
+
+CREATE TABLE Product(
+    productNr Int IDENTITY(1,1) PRIMARY KEY,
+    productName varchar(40),
+    currentAmount int,
+    minimiumamount int,
+    productDescription varchar(100)
+    
+)
+
+CREATE TABLE ProductCategory(
+    title VARCHAR(40) PRIMARY KEY,
+    productCategoryDescription VARCHAR(100)
+)
+
+CREATE TABLE ProductCategoryProduct(
+    title VARCHAR(40) FOREIGN KEY REFERENCES ProductCategory(title),
+    productNr int FOREIGN KEY REFERENCES Product(productNr),
+    PRIMARY key (title, productNr)
+)
+
+
+CREATE TABLE Situation(
+    situationName VARCHAR(40) PRIMARY KEY,
+    
+)
+
+
+CREATE TABLE Price(   
+    priceValue int,
+    percentDiscount int,
+    productNr int FOREIGN KEY REFERENCES Product(productNr) not null,
+    situationName VARCHAR(40) FOREIGN KEY REFERENCES Situation(situationName) not null,
+    PRIMARY KEY(productNr, situationName)
+)
+
+CREATE TABLE Employee(
+    employeeId int IDENTITY(1,1) PRIMARY KEY,
+    personName VARCHAR(40),
+    phoneNumber CHAR(8),
+    cpr CHAR(10)
+)
+
+CREATE TABLE Customer(
+    customerId int IDENTITY(1,1) PRIMARY KEY,
+    personName VARCHAR(40),
+    phoneNumber CHAR(8),
+    cvr CHAR(8),
+)
+
+CREATE TABLE Sale(
+    saleNumber int IDENTITY(1,1) PRIMARY key,
+    endDate DATE,
+    customerId int FOREIGN KEY REFERENCES Customer(customerId),
+    employeeId int FOREIGN KEY REFERENCES Employee(employeeId) not null
+)
+
+CREATE TABLE OrderLine(
+    amount int,
+    fixedPrice DECIMAL(6,2),
+    saleNumber int FOREIGN key REFERENCES Sale(saleNumber) not null,
+    productNr int FOREIGN key REFERENCES Product(productNr) not null,
+    PRIMARY KEY(saleNumber, productNr)
+)
+
+
