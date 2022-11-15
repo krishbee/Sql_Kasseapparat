@@ -1,8 +1,14 @@
  --Gruppe 4, Peter, Julius, Kristoffer og Magnus
-drop table Customer
-drop table Sale
 drop table OrderLine
-drop table 
+drop table Sale
+drop table Customer
+drop table Price
+drop TABLE Employee
+DROP TABLE ProductCategoryProduct
+DROP TABLE ProductCategory
+DROP TABLE Product
+drop table Situation
+
 
 
 -- Create table fil
@@ -63,7 +69,7 @@ CREATE TABLE Sale(
 
 CREATE TABLE OrderLine(
     amount int,
-    fixedPrice DECIMAL(6,2),
+    fixedPrice DECIMAL(6,2) DEFAULT 0,
     saleNumber int FOREIGN key REFERENCES Sale(saleNumber) not null,
     productNr int FOREIGN key REFERENCES Product(productNr) not null,
     PRIMARY KEY(saleNumber, productNr)
