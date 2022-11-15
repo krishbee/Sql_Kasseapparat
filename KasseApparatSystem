@@ -1,4 +1,9 @@
  --Gruppe 4, Peter, Julius, Kristoffer og Magnus
+drop table Customer
+drop table Sale
+drop table OrderLine
+drop table 
+
 
 -- Create table fil
 CREATE TABLE Product(
@@ -24,7 +29,6 @@ CREATE TABLE ProductCategoryProduct(
 
 CREATE TABLE Situation(
     situationName VARCHAR(40) PRIMARY KEY,
-    
 )
 
 
@@ -47,7 +51,7 @@ CREATE TABLE Customer(
     customerId int IDENTITY(1,1) PRIMARY KEY,
     personName VARCHAR(40),
     phoneNumber CHAR(8),
-    cvr CHAR(8),
+    cvr CHAR(8) DEFAULT null,
 )
 
 CREATE TABLE Sale(
