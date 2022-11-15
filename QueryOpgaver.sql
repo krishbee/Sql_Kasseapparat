@@ -1,21 +1,39 @@
 -- Opgave 2
 -- a
-SELECT Product.productNr, productName, priceValue, Situation.situationName from Product
-Inner join Price
-on Price.productNr = Product.productNr
-inner join Situation
-on Situation.situationName = Price.situationName
+SELECT Product.productNr, productName, priceValue, S.situationName from Product
+Inner join Price as P
+on P.productNr = Product.productNr
+inner join Situation as S
+on S.situationName = P.situationName
+where Product.productNr = 2
+
 
 -- b
-SELECT Product.productName, Price.priceValue as 'Pris Pr. Stk.', Orderline.amount, SUM(Price.priceValue * Orderline.amount) as total from Sale
-Inner join OrderLine
-on Sale.saleNumber = OrderLine.saleNumber
-Inner join Product
-on Product.productNr = OrderLine.productNr
-inner join Price
-on Product.productNr = Price.productNr
-GROUP by productName, priceValue, amount
+--SELECT Pro.productName, Pri.priceValue as 'Pris Pr. Stk.', O.amount, SUM(Pri.priceValue * O.amount) as total from Sale
+--Inner join OrderLine as O
+--on Sale.saleNumber = O.saleNumber
+--Inner join Product as Pro
+--on Pro.productNr = O.productNr
+--inner join Price as Pri
+--on Pri.productNr = Pro.productNr
+--where Sale.saleNumber = 2
+--GROUP by productName, priceValue, amount
+--order by total DESC
+
+
+-------------------------------------------------------------------------------------
+SELECT Sale.saleNumber, SUM(Pri.priceValue * O.amount) as total from Sale
+Inner join OrderLine as O
+on Sale.saleNumber = O.saleNumber
+Inner join Product as Pro
+on Pro.productNr = O.productNr
+inner join Price as Pri
+on Pri.productNr = Pro.productNr
+where Sale.saleNumber = 2
+GROUP BY Sale.saleNumber
 order by total DESC
+
+
 
 -- c
 SELECT ProductCategory.title, Product.productName, OrderLine.amount from ProductCategory
