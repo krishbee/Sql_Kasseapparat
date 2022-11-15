@@ -1,4 +1,6 @@
+ --Gruppe 4, Peter, Julius, Kristoffer og Magnus
 
+-- Create table fil
 CREATE TABLE Product(
     productNr Int IDENTITY(1,1) PRIMARY KEY,
     productName varchar(40),
@@ -14,8 +16,8 @@ CREATE TABLE ProductCategory(
 )
 
 CREATE TABLE ProductCategoryProduct(
-    title VARCHAR(40) FOREIGN KEY REFERENCES ProductCategory(title),
-    productNr int FOREIGN KEY REFERENCES Product(productNr),
+    title VARCHAR(40) FOREIGN KEY REFERENCES ProductCategory(title) not NULL,
+    productNr int FOREIGN KEY REFERENCES Product(productNr) not null,
     PRIMARY key (title, productNr)
 )
 
@@ -63,4 +65,10 @@ CREATE TABLE OrderLine(
     PRIMARY KEY(saleNumber, productNr)
 )
 
+SELECT * FROM OrderLine
+SELECT * FROM Product
+SELECT * FROM ProductCategory
+SELECT * FROM Sale
+SELECT * FROM Customer
+SELECT * FROM Employee
 

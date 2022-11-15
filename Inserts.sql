@@ -1,98 +1,79 @@
-insert into ProductCategory values (Flaske l, ),
-insert into Product values (Klosterbryg, , ),
-insert into Product values (Sweet Georgia Brown, , ),
-insert into Product values (Extra Pilsner, , ),
-insert into Product values (Celebration, , ),
-insert into Product values (Blondie, , ),
-insert into Product values (For rsbryg, , ),
-insert into Product values (India Pale Ale, , ),
-insert into Product values (Julebryg, , ),
-insert into Product values (Julet nden, , ),
-insert into Product values (Old Strong Ale, , ),
-insert into Product values (Fregatten Jylland, , ),
-insert into Product values (Imperial Stout, , ),
-insert into Product values (Tribute, , ),
-insert into Product values (Black Monster, , ),
-insert into ProductCategory values (Fad l, 40 cl),
-insert into Product values (Klosterbryg, , ),
-insert into Product values (Jazz Classic, , ),
-insert into Product values (Extra Pilsner, , ),
-insert into Product values (Celebration, , ),
-insert into Product values (Blondie, , ),
-insert into Product values (For rsbryg, , ),
-insert into Product values (India Pale Ale, , ),
-insert into Product values (Julebryg, , ),
-insert into Product values (Imperial Stout, , ),
-insert into Product values (Special, , ),
-insert into ProductCategory values (Snacks, ),
-insert into Product values ( blebrus, , ),
-insert into Product values (Chips, , ),
-insert into Product values (Peanuts, , ),
-insert into Product values (Cola, , ),
-insert into Product values (Nikoline, , ),
-insert into Product values (7-Up, , ),
-insert into Product values (Vand, , ),
-insert into Product values ( lp lser, , ),
-insert into ProductCategory values (Spiritus, ),
-insert into Product values (Whiskey 45%, 50cl r r, ),
-insert into Product values (Whiskey 45%, 4 cl, ),
-insert into Product values (Whiskey 43%, 50 cl r r, ),
-insert into Product values (Whiskey 43%,  u/ egesplint, ),
-insert into Product values (Whiskey 43%,  m/ egesplint, ),
-insert into Product values (Whiskeyglas & Brikker, 2 stk, ),
-insert into Product values (Liquer of Aarhus, , ),
-insert into Product values (Lyng gin, 50 cl, ),
-insert into Product values (Lyng gin, 4 cl, ),
-insert into ProductCategory values (Fustage, ),
-insert into Product values (Klosterbryg, 20 l, ),
-insert into Product values (Jazz Classic, 25 l, ),
-insert into Product values (Extra Pilsner, 25, ),
-insert into Product values (Celebration, 20, ),
-insert into Product values (Blondie, 25, ),
-insert into Product values (For rsbryg, 20, ),
-insert into Product values (India Pale Ale, 20, ),
-insert into Product values (Julebryg, 20, ),
-insert into Product values (Imperial Stout, 20, ),
-insert into ProductCategory values (Kulsyre, ),
-insert into Product values (Kulsyre - 6 kg, , ),
-insert into Product values (Kulsyre - 4 kg, , ),
-insert into Product values (Kulsyre - 10 kg, , ),
-insert into ProductCategory values (Malt, ),
-insert into Product values (Malt, 25 kg, ),
-insert into ProductCategory values (Bekl dning, ),
-insert into Product values (T-shirt, , ),
-insert into Product values (Polo, , ),
-insert into Product values (Cap, , ),
-insert into ProductCategory values (Anl g, ),
-insert into Product values (1 Hane, , ),
-insert into Product values (2 Haner, , ),
-insert into Product values (Bar med flere haner, , ),
-insert into Product values (Anl g Levering, , ),
-insert into Product values (Krus, , ),
-insert into ProductCategory values (Glas, ),
-insert into Product values (Glas, Uanset st rrelse, ),
-insert into ProductCategory values (Sampakninger, ),
-insert into Product values (Gave ske, 2  l, 2 glas, ),
-insert into Product values (Gave ske, 4  l, ),
-insert into Product values (Tr kasse, 6  l, ),
-insert into Product values (Gavekurv, 6  l, 2 glas, ),
-insert into Product values (Tr kasse, 6  l, 6 glas, ),
-insert into Product values (Tr kasse, 12  l, ),
-insert into Product values (Papkasse, 12  l, ),
-insert into ProductCategory values (Rundvisning, ),
-insert into Product values (Rundvisning - Standard, Indenfor arbejdstid, ),
-insert into Product values (Rundvisning - Studerende, , ),
-insert into Product values (Rundvisning - Aften, Udenfor arbejdstid, ),
-insert into ProductCategory values (Klippekort, ),
-insert into ProductCategory values (Flaske l, ),
-insert into ProductCategory values (Fad l, 40 cl),
-insert into ProductCategory values (Snacks, ),
-insert into ProductCategory values (Spiritus, ),
-insert into ProductCategory values (Fustage, ),
-insert into ProductCategory values (Kulsyre, ),
-insert into ProductCategory values (Malt, ),
-insert into ProductCategory values (Bekl dning, ),
-insert into ProductCategory values (Anl g, ),
-insert into ProductCategory values (Glas, ),
-insert into ProductCategory values (Sampakninger, ),
-insert into ProductCategory values (Rundvisning, ),
+
+
+DECLARE @cnt int = 1
+-- Product
+while @cnt < 20
+BEGIN
+    INSERT Into Product
+    VALUES('Pilsner' + convert(varchar(30), @cnt),30, 40, 'Smager dejligt')
+    set @cnt = @cnt + 1
+
+END
+
+-- Customer
+DECLARE @cnt int = 1
+
+while @cnt < 20
+BEGIN
+    INSERT Into Customer
+    VALUES(2189132, 'Prutskid', @cnt)
+    set @cnt = @cnt + 1
+
+END
+
+-- Employee
+DECLARE @cnt int = 1
+
+while @cnt < 20
+BEGIN
+    INSERT Into Employee
+    VALUES('1231213' + convert(varchar(30), @cnt), 'Prutskid', convert(varchar(30), @cnt))
+    set @cnt = @cnt + 1
+
+END
+
+
+
+--Orderline
+Set @cnt = 1
+
+while @cnt < 20
+BEGIN
+    INSERT Into OrderLine
+    VALUES(@cnt, @cnt)
+    set @cnt = @cnt + 1
+
+END
+
+SELECT * FROM Product
+
+Insert into Sale VALUES(GETDATE(),1,1)
+Insert into Sale VALUES(GETDATE(),2,2)
+Insert into Sale VALUES(GETDATE(),3,3)
+Insert into Sale VALUES(GETDATE(),4,4)
+
+DECLARE @cnt int = 1
+
+while @cnt < 4
+BEGIN
+    INSERT Into OrderLine
+    VALUES(@cnt, @cnt, @cnt, @cnt)
+    set @cnt = @cnt + 1
+
+END
+
+SELECT * FROM ProductCategory
+Insert into ProductCategory VALUES('Prut', 'prut')
+Insert into ProductCategory VALUES('skid', 'skid')
+
+Insert into ProductCategoryProduct VALUES('prut', 5)
+Insert into ProductCategoryProduct VALUES('skid', 7)
+
+
+Insert into Situation VALUES('Fredagsbar')
+Insert into Situation VALUES('Butik')
+
+insert into Price VALUES(
+    1,1,1,'Fredagsbar'
+)
+Insert into Price VALUES(2,2,2,'Butik')
