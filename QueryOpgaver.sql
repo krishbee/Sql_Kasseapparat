@@ -76,3 +76,30 @@ on Pri.productNr = Pro.productNr
 where Sale.saleNumber > 0
     GROUP BY Sale.saleNumber
 ) AS inner_query
+
+/* Opgave 4c
+Givet en streng som parameter udskriver navn på alle de medarbejdere og kunder, hvis
+navne starter med den pågældende streng.
+*/
+Create proc FindPersonMedNavn
+--input parameter
+@personName varchar(30)
+as
+Begin
+Select e.personName, e.phoneNumber
+from Employee e
+where 
+e.personName = @personName
+Union all
+select c.personName, c.phoneNumber
+from Customer c
+where 
+c.personName = @personName
+End
+
+-- KØR proc 4c
+exec FindPersonMedNavn 'Peter'
+
+-- DROP proc 4c
+drop proc FindPersonMedNavn
+-- OPGAVEN ER IKKE LØST KORREKT. JEG KAN FINDE ALLE DER KUN HEDDER 'PETER', IKKE ALLE HVIS NAVN STARTER MED 'PETER'.
