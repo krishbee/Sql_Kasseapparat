@@ -210,6 +210,7 @@ INSERT INTO Employee Values('Kraler', '30411231', '9012973311')
 INSERT INTO Employee Values('Vup', '30411231', '9012973311')
 INSERT INTO Employee Values('Quaxs', '30411231', '9012973311')
 INSERT INTO Employee Values('dormor', '30411231', '9012973311')
+INSERT INTO Employee Values('Peter Jensen', '30411231', '9012973399')
 
 insert into Customer (personName, phoneNumber)
 values 
@@ -219,7 +220,9 @@ values
 ('Grethe Middelman', 20475618),
 ('Julie Tinkermand', 10608838),
 ('Frida Hertzon', 62738406),
-('Paul Unterweiss', 19275620)
+('Paul Unterweiss', 19275620),
+('Peter Moeller', 19275688),
+('Peter Paludan', 20275677)
 
 insert into Customer (personName, phoneNumber, cvr)
 values 
