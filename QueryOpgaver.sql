@@ -13,17 +13,15 @@ where Product.productNr = 2
 SELECT Sale.saleNumber, SUM(ISNULL(O.fixedPrice, Pri.priceValue * O.amount * (1.0 - Pri.percentDiscount /100.0))) as total from Sale
 Inner join OrderLine as O
 on Sale.saleNumber = O.saleNumber
-Inner join Product as Pro
-on Pro.productNr = O.productNr
-inner join Price as Pri 
+Inner join Price as Pri
+on Pri.priceId = O.priceId
+inner join Product as Pro 
 on Pri.productNr = Pro.productNr
 inner join Situation
 on Situation.situationName = Pri.situationName
-where Sale.saleNumber = 11 and Situation.situationName = 'Standard'
+where Sale.saleNumber = 12
 GROUP BY Sale.saleNumber
-order by total DESC 
 
-SELECT * FROM Price
 
 
 -- c
@@ -31,16 +29,19 @@ select PCP.title, PRO.productName, SUM(OL.amount) as 'Number Sold', S.endDate
 from Product PRO
 inner join ProductCategoryProduct PCP
 on PRO.productNr = PCP.productNr
+inner join Price as Pri
+on Pri.productNr = PRO.productNr
 inner join OrderLine OL
-on OL.productNr = PRO.productNr
+on OL.priceId = Pri.priceId
 inner join Sale S
 on OL.saleNumber = S.saleNumber
 group by PCP.title, PRO.productName, S.endDate
-having SUM(OL.amount) >= 5 AND MONTH(S.endDate) = 11
+having SUM(OL.amount) >= 5 AND MONTH(S.endDate) = 7
+
 
 
 --D
-
+-- kan forkortes?
 SELECT ProductCategory.title, Pro.productName from ProductCategory
 inner join ProductCategoryProduct as ProCat
 on ProCat.title = ProductCategory.title
@@ -64,31 +65,20 @@ WHERE sit.situationName = 'Fredagsbar'
 
 
 -- e
-SELECT Sale.saleNumber, SUM(Pri.priceValue * O.amount) as total from Sale
-Inner join OrderLine as O
-on Sale.saleNumber = O.saleNumber
-Inner join Product as Pro
-on Pro.productNr = O.productNr
-inner join Price as Pri
-on Pri.productNr = Pro.productNr
-where Sale.saleNumber > 0
-GROUP BY Sale.saleNumber
-order by saleNumber ASC
-
--- Gennesnit for alle salg
-SELECT AVG(asset_sums)
-FROM
+SELECT AVG(asset_sums) as gennemsnit
+FROM Sale
+inner JOIN
 (
-SELECT Sale.saleNumber, SUM(Pri.priceValue * O.amount) AS asset_sums FROM Sale
+SELECT sale.saleNumber, SUM(ISNULL(O.fixedPrice, Pri.priceValue * O.amount * (1.0 - Pri.percentDiscount /100.0))) AS asset_sums FROM Sale
 Inner join OrderLine as O
 on Sale.saleNumber = O.saleNumber
-Inner join Product as Pro
-on Pro.productNr = O.productNr
 inner join Price as Pri
-on Pri.productNr = Pro.productNr
-where Sale.saleNumber > 0
-    GROUP BY Sale.saleNumber
-) AS inner_query
+on Pri.priceId = O.priceId
+inner join Situation
+on Situation.situationName = Pri.situationName
+group by Sale.saleNumber
+) inner_query
+on inner_query.saleNumber = Sale.saleNumber
 
 -- f
 select PCP.title, MAX(PRI.priceValue) as 'Max Price'
@@ -127,28 +117,32 @@ inner join ProductCategoryProduct as ProCatPro
 on ProCatPro.title = productCategory.title
 inner join Product
 on Product.productNr = ProCatPro.productNr
+inner join Price
+on Price.productNr = Product.productNr
 LEFT JOIN OrderLine
-on OrderLine.productNr = Product.productNr
+on OrderLine.priceId = Price.priceId
 GROUP BY ProductCategory.title, Product.productName
+
 
 go
 SELECT * From antalAfProduktersolgt
 
 -- 3b
-GO
+
+GO;
+
 CREATE VIEW SaleOverview 
 AS
-select S.saleNumber, C.personName as Customer, E.personName as Salesman, (SELECT SUM(ISNULL(O.fixedPrice, Pri.priceValue * (1-PRI.percentDiscount/100) * O.amount)) as total 
-													from Sale
-													Inner join OrderLine as O
-													on Sale.saleNumber = O.saleNumber
-													Inner join Product as Pro
-													on Pro.productNr = O.productNr
-													inner join Price as Pri
-													on Pri.productNr = Pro.productNr
-													where Sale.saleNumber = S.saleNumber
-													GROUP BY Sale.saleNumber
-													) as SaleTotal
+select S.saleNumber, C.personName as Customer, E.personName as Salesman, 
+                            (SELECT SUM(ISNULL(O.fixedPrice, Pri.priceValue * (1.0-PRI.percentDiscount/100.0) * O.amount)) as total 
+                            from Sale
+                            Inner join OrderLine as O
+                            on Sale.saleNumber = O.saleNumber
+                            inner join Price as Pri
+                            on Pri.priceId = O.priceId
+                            where Sale.saleNumber = S.saleNumber
+                            GROUP BY Sale.saleNumber
+                            ) as SaleTotal
 from Sale S
 inner join Customer C
 on C.customerId = S.customerId
@@ -161,27 +155,31 @@ group by Salesman
 
 
 -- Opgave 4.
+--a
 go
 Create PROC WritePriceList
 @situationName VARCHAR(40)
 AS
-SELECT Product.productName, sum(priceValue * (1 + (percentDiscount/ 100))) from Product
+SELECT Product.productName, sum(priceValue * (1.0 + (percentDiscount/ 100.0))) as 'Pris' from Product
 inner join Price as P
 on P.productNr = Product.productNr
 inner join Situation
 on Situation.situationName = P.situationName
-WHERE Situation.situationName = 'Fredagsbar'
+WHERE Situation.situationName = @situationName
 Group by Product.productName
 
+exec WritePriceList 'Fredagsbar'
 -- b
 go
-CREATE PROCEDURE setDiscountOnProductCategory @percent Integer, @category varchar(40)
+CREATE PROCEDURE setDiscountOnProductCategory 
+@percent Integer, 
+@category varchar(40)
 as
 Update Price
 set percentDiscount = @percent
-where Price.productNr in (select PCP.productNr
-						from ProductCategoryProduct PCP)
+where Price.productNr in (select PCP.productNr from ProductCategoryProduct PCP where PCP.title = @category)
 
+Exec setDiscountOnProductCategory 10, 'Flaskeøl'
 
 
 -- 4C
@@ -197,13 +195,11 @@ as
 Begin
 Select e.personName, e.phoneNumber
 from Employee e
-where 
-e.personName = @personName
+where e.personName like @personName + '%'
 Union all
 select c.personName, c.phoneNumber
 from Customer c
-where 
-c.personName = @personName
+where c.personName like @personName + '%'
 End
 
 -- KØR proc 4c
@@ -211,10 +207,19 @@ exec FindPersonMedNavn 'Peter'
 
 -- DROP proc 4c
 drop proc FindPersonMedNavn
--- OPGAVEN ER IKKE LØST KORREKT. JEG KAN FINDE ALLE DER KUN HEDDER 'PETER', IKKE ALLE HVIS NAVN STARTER MED 'PETER'.
 
 -- Opgave 5
 -- A
+
+-- Testdata til nedenstående
+Insert into Product VALUES('Hat', 30,10,'')
+insert into ProductCategory Values('Sjove hatte','Alle mulige sjove hatte')
+Insert into Product VALUES('Hatter', 30,10,'')
+INSERT into ProductCategoryProduct values('Sjove hatte', 86)
+INSERT into ProductCategoryProduct values('Sjove hatte', 87)
+INSERT into ProductCategoryProduct values('Sjove hatte', 88)
+INSERT into ProductCategoryProduct values('Sjove hatte', 89)
+-----------------------------------------------------------------------------
 go
 Create trigger sletTomProduktKategori
        on product
@@ -225,22 +230,27 @@ Create trigger sletTomProduktKategori
        set @produktNr = (select productNr from deleted)
        set @produktetsProduktgruppe = (select title from ProductCategoryProduct where productNr = @produktNr)
        delete from ProductCategoryProduct
-       where productNr = @produktNr
+       where ProductCategoryProduct.productNr = @produktNr
+       delete from Product
+       where Product.productNr = @produktNr
 IF not exists (select title from ProductCategoryProduct where title = @produktetsProduktgruppe)
        begin
        delete from ProductCategory
-       where title = @produktetsProduktgruppe
-delete from Product
-       where productNr = @produktNr
-print 'produktet og produktgruppen blev slettet'
+       where ProductCategory.title = @produktetsProduktgruppe
+       print 'produktet og produktgruppen blev slettet'
        end
-       else
+else
        begin
-       print 'der skete ingenting'
+       print 'Produktet blev slettet'
        end
 
 
+Drop TRIGGER sletTomProduktKategori
 
+SELECT * From Product
+
+DELETE From Product
+where productNr = 89
 
 -- B
 GO
@@ -248,7 +258,11 @@ CREATE TRIGGER OpdatereAntal on orderline
 after INSERT
 AS
 DECLARE @productNr as INT
-set @productNr = (Select productNr from inserted)
+set @productNr = (Select Product.productNr from inserted
+Inner join Price
+On Price.priceId = inserted.priceId
+inner join Product
+on Product.productNr = Price.productNr)
 DECLARE @amount as INT
 set @amount = (select amount from inserted)
 BEGIN
@@ -258,3 +272,10 @@ WHERE productNr = @productNr
 END
 
 drop TRIGGER OpdatereAntal
+-- Testdata
+INSERT INTO Product VALUES('MOKAI', 30, 10, 'Lidt sjov')
+SELECT * FROM Product
+INSERT into Price VALUES(10,0,90,'Standard')
+SELECT * FRom Price
+INSERT into OrderLine Values(5,null,1,53)
+
