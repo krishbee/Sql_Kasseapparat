@@ -39,11 +39,11 @@ CREATE TABLE Situation(
 
 
 CREATE TABLE Price(   
-    priceValue int,
+    priceId INT IDENTITY(1,1) PRIMARY KEY,
+    priceValue INT,
     percentDiscount int,
     productNr int FOREIGN KEY REFERENCES Product(productNr) not null,
     situationName VARCHAR(40) FOREIGN KEY REFERENCES Situation(situationName) not null,
-    PRIMARY KEY(productNr, situationName)
 )
 
 CREATE TABLE Employee(
@@ -71,7 +71,7 @@ CREATE TABLE OrderLine(
     amount int,
     fixedPrice DECIMAL(6,2) DEFAULT 0,
     saleNumber int FOREIGN key REFERENCES Sale(saleNumber) not null,
-    productNr int FOREIGN key REFERENCES Product(productNr) not null,
-    PRIMARY KEY(saleNumber, productNr)
+    priceId int FOREIGN key REFERENCES Price(priceId) not null,
+    PRIMARY KEY(saleNumber, priceId)
 )
 
