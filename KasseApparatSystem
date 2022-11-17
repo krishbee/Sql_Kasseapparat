@@ -75,10 +75,3 @@ CREATE TABLE OrderLine(
     PRIMARY KEY(saleNumber, productNr)
 )
 
-SELECT * FROM OrderLine
-SELECT * FROM Product
-SELECT * FROM ProductCategory
-SELECT * FROM Sale
-SELECT * FROM Customer
-SELECT * FROM Employee
-
